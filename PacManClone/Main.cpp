@@ -5,6 +5,7 @@
 #include "SFML/System.hpp"
 #include "string"
 #include "Tilemap.h"
+#include "Animation.h"
 
 using namespace std;
 
@@ -13,6 +14,9 @@ using namespace std;
 // TODO: Investigate the best way to store the board format and to then render it -> This is the solution: https://www.sfml-dev.org/tutorials/2.6/graphics-vertex-array.php -> DONE
 // TODO: Scale Map file to proper window size and place it in the correct location of the window -> DONE
 // TODO: Improve quality of scaled map image
+// TODO: Analyse simply displaying the map as an image instead of reading it as a tilemap
+// TODO: Review and understand code added for animations
+
 
 /*
 The mazes are built carefully to closely match design patterns deduced from the original maps found in Pac-Man and Ms. Pac-Man:
@@ -99,10 +103,21 @@ int main() {
     background.setFillColor(sf::Color::Black);
 
     //GAME DATA STRUCTURES
+    sf::RectangleShape player(sf::Vector2f(100.0f, 150.0f));
+    player.setPosition(400, 400);
+    sf::Texture playerTexture;
+    playerTexture.loadFromFile("C:\\Users\\gonca\\source\\repos\\PacManClone\\assets\\Pac Man tile set.png");
+    player.setTexture(&playerTexture);
 
+    Animation animation(&playerTexture, sf::Vector2u(16,16), 0.3f);
+
+    float deltaTime = 0.0f;
+    sf::Clock clock;
 
     while (window.isOpen()) {
         sf::Event event;
+
+        deltaTime = clock.restart().asSeconds();
 
         while (window.pollEvent(event)) {
 
@@ -128,7 +143,11 @@ int main() {
 
         window.draw(rectTop);
         window.draw(rectBottom);
-        renderBoard(window);
+        //renderBoard(window);
+
+        // Animation to be reviewed
+        animation.Update(0, deltaTime);
+        player.setTextureRect(animation.uvRect);
 
         window.display();
     }
