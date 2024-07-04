@@ -20,6 +20,7 @@ void Animation::Update(int row, float deltaTime){
 	
 	currentImage.y = row;
 	totalTime += deltaTime;
+	int direction = 1; 
 
 	if (totalTime >= switchTime){
 	

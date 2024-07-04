@@ -15,7 +15,8 @@ using namespace std;
 // TODO: Scale Map file to proper window size and place it in the correct location of the window -> DONE
 // TODO: Improve quality of scaled map image
 // TODO: Analyse simply displaying the map as an image instead of reading it as a tilemap
-// TODO: Review and understand code added for animations
+// TODO: Review and understand code added for animations -> IN PROGRESS
+// TODO: Plan next steps
 
 
 /*
@@ -55,7 +56,7 @@ Any non-rectangular wall pieces must only be 2 tiles thick.
 #............##............#
 #.####.#####.##.#####.####.#
 #.####.#####.##.#####.####.#
-#...##................##...#
+#...##.......PM.......##...#
 ###.##.##.########.##.##.###
 ###.##.##.########.##.##.###
 #......##....##....##......#
@@ -97,19 +98,20 @@ int main() {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
 
-    //RENDER WINDOW
+    // RENDER WINDOW
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "PacMan", sf::Style::Close, settings);
     sf::RectangleShape background(sf::Vector2f(windowWidth, windowHeight));
     background.setFillColor(sf::Color::Black);
 
-    //GAME DATA STRUCTURES
-    sf::RectangleShape player(sf::Vector2f(100.0f, 150.0f));
-    player.setPosition(400, 400);
-    sf::Texture playerTexture;
-    playerTexture.loadFromFile("C:\\Users\\gonca\\source\\repos\\PacManClone\\assets\\Pac Man tile set.png");
-    player.setTexture(&playerTexture);
+    // STRUCTURES
+    sf::Texture pacManTexture;
+    pacManTexture.loadFromFile("C:\\Users\\gonca\\source\\repos\\PacManClone\\assets\\PacManAnimationTest.png");
+    
+    sf::RectangleShape pacMan(sf::Vector2f(16.f, 16.f));
+    pacMan.setPosition(400, 400);
+    pacMan.setTexture(&pacManTexture);
 
-    Animation animation(&playerTexture, sf::Vector2u(16,16), 0.3f);
+    Animation pacManAnimation(&pacManTexture, sf::Vector2u(4,1), 0.1f);
 
     float deltaTime = 0.0f;
     sf::Clock clock;
@@ -143,13 +145,17 @@ int main() {
 
         window.draw(rectTop);
         window.draw(rectBottom);
-        //renderBoard(window);
+        renderBoard(window);
 
         // Animation to be reviewed
-        animation.Update(0, deltaTime);
-        player.setTextureRect(animation.uvRect);
+        pacManAnimation.Update(0, deltaTime);
+        pacMan.setTextureRect(pacManAnimation.uvRect);
 
+        window.draw(pacMan);
         window.display();
+
+        pacMan.move(0.5f, 0.f);
+
     }
 
 	return 0;
