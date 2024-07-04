@@ -6,6 +6,7 @@
 #include "SFML/Audio.hpp"
 #include "SFML/System.hpp"
 
+// https://www.sfml-dev.org/documentation/2.6.1/classsf_1_1VertexArray.php
 
 bool TileMap::load(const std::string& tileset, sf::Vector2u tileSize, const int* tiles, unsigned int width, unsigned int height)
 {
@@ -15,6 +16,8 @@ bool TileMap::load(const std::string& tileset, sf::Vector2u tileSize, const int*
 
     // resize the vertex array to fit the level size
     m_vertices.setPrimitiveType(sf::Triangles);
+
+    // width and height of the map * 6. The 6 is 3 vertices per each triangle to make a square so 3*2
     m_vertices.resize(width * height * 6);
 
     // populate the vertex array, with two triangles per tile
@@ -24,7 +27,8 @@ bool TileMap::load(const std::string& tileset, sf::Vector2u tileSize, const int*
             // get the current tile number
             int tileNumber = tiles[i + j * width];
 
-            // find its position in the tileset texture
+            // find its position in the tileset texture <- here I need to adjust for it to be able to look into 2d tile set
+            // The tile set is 16 tiles wide and 
             int tu = tileNumber % (m_tileset.getSize().x / tileSize.x);
             int tv = tileNumber / (m_tileset.getSize().x / tileSize.x);
 
